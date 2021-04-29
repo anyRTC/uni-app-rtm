@@ -1,7 +1,7 @@
 {
 	"name": "AR-RtmModule",
 	"id": "AR-RtmModule",
-	"version": "1.0.1",
+	"version": "1.0.6",
 	"description": "anyRTC实时消息插件提供音视频功能，支持Android、iOS。",
 	"_dp_type": "nativeplugin", 
 	"_dp_nativeplugin": {
@@ -16,7 +16,7 @@
             "dependencies": [
                
             ],
-            "compileOptions": {  //可选，Java编译参数配置
+            "compileOptions": {
                
             },
             "abis": [
@@ -24,7 +24,6 @@
                 "x86"
             ],
             "minSdkVersion": "19",
-            "useAndroidX": true,   //可选，是否兼容使用AndroidX
             "permissions": [
 
             ],

@@ -1,5 +1,5 @@
 {
-    "name" : "anyRTC实时消息SDK插件",
+    "name" : "anyRTC实时消息SDK插件示例",
     "appid" : "",
     "description" : "应用描述",
     "versionName" : "1.0.0",
@@ -17,53 +17,32 @@
             "autoclose" : true,
             "delay" : 0
         },
-        "modules" : {
-            "OAuth" : {},
-            "Payment" : {},
-            "Push" : {},
-            "Share" : {},
-            "Speech" : {},
-            "VideoPlayer" : {}
-        },
+        "modules" : {},
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
             "android" : {
                 "permissions" : [
-                    "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_MOCK_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
                     "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
-                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
                     "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
                     "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.READ_SMS\"/>",
                     "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
                     "<uses-permission android:name=\"android.permission.SEND_SMS\"/>",
                     "<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SMS\"/>",
                     "<uses-permission android:name=\"android.permission.RECEIVE_USER_PRESENT\"/>"
-                ]
+                ],
+                "autoSdkPermissions" : true
             },
             /* ios打包配置 */
             "ios" : {
@@ -80,22 +59,22 @@
             "orientation" : [ "portrait-primary" ]
         },
         "nativePlugins" : {
-            "Rtm-Module" : {
-                "android_appid" : "RTM123",
+            "AR-RtmModule" : {
+                "android_appid" : "177e21c0d1641291c34e46e1198bd49a",
                 "__plugin_info__" : {
-                    "name" : "Rtm-Module",
-                    "description" : "测试RTM插件",
-                    "platforms" : "Android",
-                    "url" : "",
-                    "android_package_name" : "",
+                    "name" : "anyRTC实时消息SDK插件",
+                    "description" : "anyRTC实时消息插件提供实时消息功能，支持Android、iOS。",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=3777",
+                    "android_package_name" : "io.anyrtc.rtmdemo",
                     "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "3777",
                     "parameters" : {
                         "android_appid" : {
-                            "des" : "__UNI__1111203",
-                            "key" : "RTM123",
+                            "des" : "",
+                            "key" : "",
                             "value" : ""
                         }
                     }

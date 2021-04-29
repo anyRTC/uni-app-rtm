@@ -1,0 +1,430 @@
+<template>
+    <view class="container">
+		<view style="margin-top:100px;" class="rowBox" v-if="showLogin">
+			<input class='input_id' placeholder="请输入你的ID" v-model="userId" style="width:200px;height:50px;left:20px;"/>
+			<button type="default" style="width: 100px;height: 40px;right:20px; top: 10px;" @click="login()">登录</button>
+		</view>
+		<view v-if="showMsg">
+			<view style="margin-top:100px;" class="rowBox">
+				<text style="margin-left:20px ;margin-top:10px; color: #007AFF;">User Id：{{userId}}</text>
+				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='logout()'>登出</button>
+			</view>
+			
+			<view style="margin-top:10px;" class="rowBox">
+				<input class='input_id' placeholder="请输入peer ID" v-model="peerId" style="width:200px;height:40px;left:20px;"/>
+				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='queryPeersOnlineStatus()'>查询在线</button>
+			</view>
+			
+			<view style="margin-top:10px;" class="rowBox">
+				<input class='input_id' placeholder="请输入点对点消息" v-model="ptoPMsg" style="width:200px;height:40px;left:20px;"/>
+				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='sendMessageToPeer()'>发送</button>
+			</view>
+			
+			<view style="margin-top:10px;" class="rowBox">
+				<input class='input_id' placeholder="请输入频道ID" v-model="channelId" style="width:200px;height:40px;left:20px;"/>
+				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='joinChannel()'>加入频道</button>
+			</view>
+			
+			<view style="margin-top:10px;" class="rowBox">
+				<input class='input_id' placeholder="请输入要呼叫的ID" v-model="callId" style="width:200px;height:40px;left:20px;"/>
+				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='callMember()'> {{isCalled ? "取消呼叫" : "呼叫"}}</button>
+			</view>
+			
+			<view v-if="showChannel">
+				<view class="rowBox" style="margin-top: 10px;">
+					<text style="margin-left:20px ;margin-top:10px; color: #007AFF;">Channel Id：{{channelId}}</text>
+					<button type="default" style="width: 100px;height: 40px;right:20px;" @click='leave()'>离开频道</button>
+				</view>
+				<button type="default" style="width: 150px;height: 40px;left:20px;margin-top:10px;" @click='getMembers()'>获取频道成员</button>
+				<view class="rowBox" style="margin-top: 10px;">
+					<input class='input_id' placeholder="请输入频道消息" v-model="channelMsg" style="width:200px;height:40px;left:20px;"/>
+					<button type="default" style="width: 100px;height: 40px;right:20px;" @click='sendChannelMessage()'>发送</button>
+				</view>
+			</view>
+		</view>
+		<scroller class="clogshow" style="height: 400px;">
+			<view class="clogshow_color" v-for="(text, index) in result" :key="text + index">
+				<text class="clogshow_color">{{text}}</text></view>
+		</scroller>
+		
+    </view>
+</template>
+
+<script>
+    var rtmModule = uni.requireNativePlugin("AR-RtmModule");
+    export default {
+        data() {
+            return {
+				showLogin: true,
+				showMsg: false,
+				showChannel: false,
+				isCalled: false,//是否已发送呼叫
+                result: [""],
+				userId: '',
+				channelId: '',
+				peerId: '',
+				ptoPMsg: '',
+				channelMsg: '',
+				peerIds: [],
+            }
+        },
+		
+        methods: {
+            setCallBack(){
+                rtmModule.setCallBack((ret) =>{
+					this.result.unshift("rtmEvent = " + ret.rtmEvent);
+					switch(ret.rtmEvent){
+						case "onConnectionStateChanged":
+							this.result.unshift("onConnectionStateChanged state =" + ret.state + ", reason = " + ret.reason);
+							break;
+						case "onPeerMessageReceived":
+							this.result.unshift("收到来自：" + ret.peerId + " 的消息："+ ret.text);
+							break;
+						case "onPeersOnlineStatusChanged":
+							this.result.unshift("peersStatus = " + ret.peersStatus);
+							break;
+						case "onMemberCountUpdated":
+							this.result.unshift("频道人员更新："+ ret.memberCount);
+							break;
+						case "onAttributesUpdated":
+							this.result.unshift("频道属性更新");
+							break;
+						case "onChannelMessageReceived":
+							this.result.unshift(ret.userId +" 发来消息："+ ret.text);
+							break;
+						case "onMemberJoined":
+							this.result.unshift(ret.userId + "加入频道");
+							break;
+						case "onMemberLeft":
+							this.result.unshift(ret.userId + "离开频道");
+							break;
+						case "onRemoteInvitationReceived":
+							this.result.unshift("收到呼叫邀请 onRemoteInvitationReceived");
+							uni.showModal({  
+							    title: "收到一个呼叫邀请",  
+							    content: "callerId" + ret.callerId,   
+							    cancelText: "拒绝",   
+							    confirmText: "同意",   
+							    showCancel: true,   
+							    success: (res) => {  
+							        if(res.confirm) {  
+										rtmModule.acceptRemoteInvitation({
+											"calleeId": ret.callerId,
+											"response": ""
+										},(ret)=>{
+											this.result.unshift("同意呼叫！errorCode = " + ret.code);
+										})
+							        } else {  
+							            rtmModule.refuseRemoteInvitation({
+											"calleeId": ret.callerId,
+							            	"response": ""
+							            },(ret)=>{
+							            	this.result.unshift("拒绝呼叫！errorCode = " + ret.code);
+							            })             
+							        }  
+							    }  
+						}); 	
+							break;
+						case "onRemoteInvitationAccepted":
+							this.result.unshift(" 你同意了呼叫 onRemoteInvitationAccepted");
+							uni.showToast({
+								title:"你同意了呼叫"
+							})
+							break;
+						case "onRemoteInvitationRefused":
+							this.result.unshift(" 你拒绝了呼叫 onRemoteInvitationRefused");
+							uni.showToast({
+								title:"你拒绝了呼叫"
+							})
+							break;
+						case "onRemoteInvitationCanceled":
+						this.result.unshift(" 对方取消了呼叫 onRemoteInvitationCanceled");
+						uni.showToast({
+							title:"对方取消了呼叫"
+						})
+							break;
+						case "onRemoteInvitationFailure":
+							this.result.unshift(" 对方呼叫失败 onRemoteInvitationFailure");
+							uni.showToast({
+								title:"对方呼叫失败"
+							})
+							break;
+						case "onLocalInvitationReceivedByPeer":
+							
+							if(ret.state == 1){
+								this.result.unshift("已发送呼叫 onLocalInvitationReceivedByPeer");
+							}else if(ret.state == 2){
+								this.result.unshift("对方已收到 onLocalInvitationReceivedByPeer");
+							}
+							uni.showToast({
+								title:"已发送呼叫"
+							})
+							break;
+						case "onLocalInvitationAccepted":
+							this.result.unshift(ret.calleeId+"同意了你的呼叫 onLocalInvitationReceivedByPeer");
+							uni.showToast({
+								title:ret.calleeId+"同意了你的呼叫"
+							})
+							this.isCalled = false;
+							break;
+						case "onLocalInvitationRefused":
+							this.result.unshift(ret.calleeId+"拒绝了你的呼叫 onLocalInvitationReceivedByPeer");
+							uni.showToast({
+								title:ret.calleeId+"拒绝了你的呼叫"
+							})
+							this.isCalled = false;
+							break;
+							case "onLocalInvitationCanceled":
+							this.result.unshift("取消了呼叫 onLocalInvitationReceivedByPeer");
+							uni.showToast({
+								title:"你取消了呼叫"
+							})
+							this.isCalled = false;
+							break;
+							case "onLocalInvitationFailure":
+							this.result.unshift("呼叫失败 onLocalInvitationFailure");
+							uni.showToast({
+								title:"呼叫失败"
+							})
+							this.isCalled = false;
+							break;
+						default:
+							break;
+					}
+                })
+            },
+			
+			createInstance(){
+				rtmModule.createInstance({
+					//anyRTC 为 App 开发者签发的 App ID。每个项目都应该有一个独一无二的 App ID。如果你的开发包里没有 App ID，请从anyRTC官网(https://www.anyrtc.io)申请一个新的 App ID
+					"appId":""
+				},(ret)=>{
+					this.result.unshift("[createInstance] " + ret.code);
+				})
+			},
+			
+			login(){
+				if (this.userId) {
+					this.result.unshift("您的ID:" + this.userId);
+					this.setCallBack();
+					this.createInstance();
+					rtmModule.login({
+						"token": "",
+						"userId": this.userId
+					},(ret)=>{
+						if(ret.code == 0){
+							this.result.unshift("登录成功！");
+							this.showLogin = false;
+							this.showMsg = true;
+							
+							rtmModule.setCallEventListener((ret)=>{
+								this.result.unshift("监听呼叫邀请事件");
+							});
+						} else {
+							this.result.unshift("登录失败! errorCode = " + reb.code);
+						}
+					})
+				} else {
+					this.result.unshift("请输入您的ID");
+				}
+			},
+			
+			logout(){
+				rtmModule.logout((ret)=>{
+					if(ret.code == 0){
+						this.result.unshift("登出成功！");
+						this.showLogin =true;
+						this.showMsg =false;
+						this.showChannel =false;
+					} else {
+						this.result.unshift("登出失败！ errorCode = " + ret.code);
+					}
+				});
+				
+				rtmModule.release((ret)=>{
+					this.result.unshift("release！code = " + ret.code);
+				})
+			},
+			
+			queryPeersOnlineStatus(){
+				if(this.peerId){
+					this.peerIds =[];
+					this.peerIds.push(this.peerId);
+					rtmModule.queryPeersOnlineStatus({
+						"peerIds":this.peerIds
+					},(ret)=>{
+						if(ret.code == 0) {
+							//0 在线
+							ret.peerOnlineStatus.map((onlineStatus, subIndex)=>{
+								
+							    this.result.unshift("查询成功 peerId：" + onlineStatus.peerId + " state：" + (onlineStatus.state == 0 ? "在线！" : "不在线！"));
+							})
+
+						} else {
+							this.result.unshift("查询失败！errorCode = " + ret.code);
+						}
+					})
+				} else {
+					this.result.unshift("请输入您要查询的ID");
+				}
+			},
+			
+			sendMessageToPeer(){
+				if(this.peerId){
+					if(this.ptoPMsg){
+						rtmModule.sendMessageToPeer({
+							"peerId": this.peerId,
+							"text": this.ptoPMsg,
+							"enableHistoricalMessaging": false,
+							"enableOfflineMessaging": true
+						},(ret)=>{
+							if(ret.code == 0){
+								this.result.unshift("发送消息成功!");
+							} else if (ret.code == 4){
+								//enableOfflineMessaging 为true，对方不在线，会返回4，对方上线会收到
+								this.result.unshift("发送消息成功! errorCode = 4 (对方不在线)");
+							} else {
+								this.result.unshift("发送消息失败! errorCode = " + ret.code);
+							}
+						})
+					} else {
+						this.result.unshift("发送消息不能为空!");
+					}
+				} else {
+					this.result.unshift("请输入peer ID");
+				}
+			},
+			
+			joinChannel(){
+				if(this.channelId){
+					rtmModule.createChannel({
+						"channelId":this.channelId
+					},(ret)=>{
+						this.result.unshift("创建频道" + (ret.code == 0 ? "成功！" : "失败！") );
+					});
+					
+					rtmModule.join({
+						"channelId":this.channelId
+					},(ret)=>{
+						if(ret.code == 0){
+							this.result.unshift("加入频道!");
+							this.showChannel =true;
+						} else {
+							this.result.unshift("加入频道失败！errorCode = " + ret.code);
+						}
+					})
+				} else {
+					this.result.unshift("请输入频道ID");
+				}
+			},
+			
+			leave(){
+				rtmModule.leave({
+						"channelId": this.channelId
+					},(ret)=>{
+						if(ret.code == 0){
+							this.result.unshift("离开频道");
+							this.showChannel = false;
+						} else {
+							this.result.unshift("离开频道失败！errorCode = " + ret.code);
+						}
+					})
+			},
+			
+			
+			
+			getMembers(){
+				rtmModule.getMembers({
+						"channelId": this.channelId
+					},(ret)=>{
+						if(ret.code == 0) {
+							ret.members.map((member, subIndex)=>{
+							    this.result.unshift("获取成员成功 channelId：" + member.channelId + " userId：" + member.userId);
+							})
+						} else {
+							this.result.unshift("获取成员失败！errorCode = " + ret.code);
+						}
+					})
+			},
+			
+			sendChannelMessage(){
+				if(this.channelMsg){
+					rtmModule.sendChannelMessage({
+						"channelId": this.channelId,
+						"text": this.channelMsg,
+						"enableHistoricalMessaging": false,
+						"enableOfflineMessaging": false
+					},(ret)=>{
+						if(ret.code == 0){
+							this.result.unshift("发送频道消息成功!");
+						} else {
+							this.result.unshift("发送频道消息失败! errorCode = " + ret.code);
+						}
+					})
+				} else {
+					this.result.unshift("请输入频道消息");
+				}
+			},
+			
+			callMember() {
+				if (this.isCalled) {
+					rtmModule.cancelLocalInvitation({
+						"channelId": this.channelId,
+						"calleeId": this.callId,
+						"content": ""
+					},(ret)=>{
+						if(ret.code == 0) {
+							this.isCalled = false;
+						}
+					})
+				
+					// 取消呼叫
+					
+				} else {
+					if(this.callId) {
+					rtmModule.sendLocalInvitation({
+						"channelId": this.channelId,
+						"calleeId": this.callId,
+						"content": ""
+					},(ret)=>{
+						if(ret.code == 0) {
+							this.isCalled = true;
+						}
+					})
+				} else {
+					uni.showToast({
+						title:"请输入呼叫 ID"
+					})
+				}
+				}
+				
+			}
+       
+		}
+    }
+</script>
+<style>
+/* 打印显示 */
+.clogshow {
+	height: 200rpx;
+	width: 750rpx;
+	margin: 20rpx 0 0 0;
+	background-color: #2C405A;
+	/* 	text-overflow: ; */
+	/* text-overflow: unset; */
+	/* overflow-y: auto; */
+}
+.clogshow_color {
+	padding: 10rpx 20rpx 0;
+	color: #fff;
+}
+.rowBox {
+	flex-direction: row;
+	justify-content: space-between;
+}
+.input_id {
+	border-bottom-style: solid; 
+	border-bottom-width: 1px;
+	border-bottom-color: #0a0a0a;
+}
+</style>

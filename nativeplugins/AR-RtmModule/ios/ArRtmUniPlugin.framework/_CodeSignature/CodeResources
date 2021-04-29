@@ -6,19 +6,19 @@
 	<dict>
 		<key>Frameworks/ARtmKit.framework/ARtmKit</key>
 		<data>
-		nbgD1sF97gNUkhrukeKOrqXsepQ=
+		N79ivdWLs7yl4MuK4gfkyypyTiQ=
 		</data>
 		<key>Frameworks/ARtmKit.framework/Info.plist</key>
 		<data>
-		pOG6vi/S9oVd4wpsrqwsSu2pLPA=
+		+Qn/cqU6u2NzlxcBzZ1P6H0VY4M=
 		</data>
 		<key>Frameworks/ARtmKit.framework/_CodeSignature/CodeResources</key>
 		<data>
-		+1ZpvtQOlfT7Yg7VeRWzzwPTgNs=
+		0mi/RspRkLTcj34aUBoS8pOc9m0=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ba/MrIlGs8bbrKT5dOewJzwbJ7o=
+		F6jgG49Xb1GRInNOQJNpB0iEqKk=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -27,33 +27,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			nbgD1sF97gNUkhrukeKOrqXsepQ=
+			N79ivdWLs7yl4MuK4gfkyypyTiQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			7r0QrZchve08zAWLpWFra6V6EmZQKdScWjL3oARhubE=
+			7ArhXqm/TUe8iA54fusb2jrWNV21KbvjpniXYlWThZY=
 			</data>
 		</dict>
 		<key>Frameworks/ARtmKit.framework/Info.plist</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			pOG6vi/S9oVd4wpsrqwsSu2pLPA=
+			+Qn/cqU6u2NzlxcBzZ1P6H0VY4M=
 			</data>
 			<key>hash2</key>
 			<data>
-			VS/Xmn0xXk2eAmDLHP1+yhBeJ4KL7UgfFnJHyp9X2HE=
+			rhrnkkqfW2Jz3A6cnD79C0WnzfCQH5ns3EehKzd089s=
 			</data>
 		</dict>
 		<key>Frameworks/ARtmKit.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			+1ZpvtQOlfT7Yg7VeRWzzwPTgNs=
+			0mi/RspRkLTcj34aUBoS8pOc9m0=
 			</data>
 			<key>hash2</key>
 			<data>
-			Oie9j96NW3aubl5dgX1ks7T6QMOhBdVKGA3an3rB/pQ=
+			tbfOWOYr7VHOCXFuSi/K4sjpyY/PF2MGaoD+bip5Zdc=
 			</data>
 		</dict>
 	</dict>
