@@ -78,7 +78,7 @@
 							this.result.unshift("onConnectionStateChanged state =" + ret.state + ", reason = " + ret.reason);
 							break;
 						case "onPeerMessageReceived":
-							this.result.unshift("收到来自：" + ret.peerId + " 的消息："+ ret.text);
+							this.result.unshift("收到来自：" + ret.peerId + " 的消息："+ ret.text+"时间："+ret.serverReceivedTs);
 							break;
 						case "onPeersOnlineStatusChanged":
 							this.result.unshift("peersStatus = " + ret.peersStatus);
