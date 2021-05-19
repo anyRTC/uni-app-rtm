@@ -11,7 +11,7 @@
 			</view>
 			
 			<view style="margin-top:10px;" class="rowBox">
-				<input class='input_id' placeholder="请输入peer ID" v-model="peerId" style="width:200px;height:40px;left:20px;"/>
+				<input class='input_id' placeholder="请输入对方的ID" v-model="peerId" style="width:200px;height:40px;left:20px;"/>
 				<button type="default" style="width: 100px;height: 40px;right:20px;" @click='queryPeersOnlineStatus()'>查询在线</button>
 			</view>
 			
