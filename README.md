@@ -36,6 +36,7 @@ anyRTC实时消息 包含点对点消息、频道消息、呼叫邀请等功能�
 | createInstance                        | appId(String)                                                | 创建一个 RtmClient 实例                                |
 | login                                 | token(String)、 userId(String)                               | 登录 anyrtc rtm 系统                                          |
 | logout                                | 无                                                           | 登出 anyrtc rtm 系统                                   |
+| renewToken                            | newToken(String)                                             | 更新 Token                                   |
 | release                               | 无                                                           | 释放当前 RtmClient 实例使用的所有资源                     |
 | sendMessageToPeer                     | text(String)、peerId(String)、enableHistoricalMessaging(boolean)、enableOfflineMessaging(boolean) | 向指定用户发送点对点消息或点对点的离线消息。           |
 | createChannel                         | channelId(String)                                            | 创建 anyrtc rtm 频道。                                     |
@@ -191,6 +192,18 @@ listDic 例如：{“age": 23, "name": "Jerry"}
 
 ```
 {"rtmEvent": "onPeersOnlineStatusChanged", "peersStatus": [{"peerId": "123", "state": 0}]}
+```
+
+4. onTokenWillExpire（  当前使用的 RTM Token 还有 30 秒过期  ）
+
+```
+{"rtmEvent": "onTokenWillExpire"}
+```
+
+5. onTokenDidExpire（  （SDK 断线重连时触发）当前使用的 RTM Token 已超过 24 小时的签发有效期  ）
+
+```
+{"rtmEvent": "onTokenDidExpire"}
 ```
 
 ### 2.2 RtmChannelListener
